@@ -1,9 +1,15 @@
 from mcp.server.fastmcp import FastMCP
 from dotenv import load_dotenv
-from .flux_adapter import FluxAdapter
 import os
 from typing import Optional
 from pathlib import Path
+
+# Import flux_adapter with absolute import
+try:
+    from .flux_adapter import FluxAdapter
+except ImportError:
+    # Fallback for deployment environments
+    from flux_adapter import FluxAdapter
 
 
 # Load environment variables from config/.env file (for local development)
@@ -65,7 +71,15 @@ async def flux_generate(
         image_url, meta = await adapter.generate(prompt)
         return {"status": "success", "image": image_url, "meta": meta}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        # Log the full error for debugging
+        import traceback
+        error_details = traceback.format_exc()
+        return {
+            "status": "error", 
+            "message": str(e),
+            "error_type": type(e).__name__,
+            "traceback": error_details
+        }
     
 
 if __name__ == "__main__":
