@@ -25,6 +25,24 @@ except Exception:
 # Create an MCP server
 mcp = FastMCP("FluxImageGenerator")
 
+@mcp.tool()
+async def health_check() -> dict:
+    """
+    Health check endpoint to verify server status and configuration.
+    
+    Returns:
+        dict: Server health status and configuration info
+    """
+    api_key = os.getenv("BFL_API_KEY")
+    
+    return {
+        "status": "healthy" if api_key else "unhealthy",
+        "api_key_set": bool(api_key),
+        "api_key_preview": f"{api_key[:8]}..." if api_key else "Not set",
+        "server_name": "FluxImageGenerator",
+        "available_tools": ["health_check", "flux_generate"]
+    }
+
 
 @mcp.tool()
 async def flux_generate(
