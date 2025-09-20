@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flux-mcp"
+version = "0.1.0"
+description = "MCP Server for AI image generation using Black Forest Labs' Flux models"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp",
+    "python-dotenv",
+    "requests",
+    "pydantic",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
